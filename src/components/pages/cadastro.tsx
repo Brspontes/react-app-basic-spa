@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import ProdutoService from '../../services/produtoService'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Cadastro() {
     const [nome, setNome] = useState('')
@@ -6,15 +9,51 @@ function Cadastro() {
     const [descricao, setDescricao] = useState('')
     const [preco, setPreco] = useState(0)
     const [fornecedor, setFornecedor] = useState('')
+    const service = new ProdutoService()
+
+    const notify = () => toast.error("Todos os campos obrigatórios devem estar preenchidos",{ 
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+     })
+
+     const notifySuccess = () => toast.success("Dados armazendos com sucesso", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+     })
 
     function ButtonClick() {
-        console.log({
+
+        if(!nome || !sku || !preco || !fornecedor) {
+            notify()
+            return
+        }
+
+        service.salvar({
             nome,
             sku,
             descricao,
             preco,
             fornecedor
         })
+        notifySuccess()
+    }
+
+    function LimparCampos() {
+        setNome('')
+        setSku('')
+        setDescricao('')
+        setPreco(0)
+        setFornecedor('')
     }
 
     function Nome(evt) {
@@ -40,6 +79,7 @@ function Cadastro() {
     return (
         <>
             <div className="card">
+            <ToastContainer/>
                 <div className="card-header">
                     Cadastro Produto
                 </div>
@@ -89,7 +129,7 @@ function Cadastro() {
                             <button className="btn btn-success" onClick={ButtonClick}>Salvar</button>
                         </div>
                         <div className="col-md-1">
-                            <button className="btn btn-primary">Limpar</button>
+                            <button className="btn btn-primary" onClick={LimparCampos}>Limpar</button>
                         </div>
                     </div>
                 </div>
